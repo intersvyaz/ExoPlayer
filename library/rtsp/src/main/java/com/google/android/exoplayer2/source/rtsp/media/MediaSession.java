@@ -312,6 +312,7 @@ public final class MediaSession implements VideoListener {
         if (state > PREPARED && state < STOPPED) {
             keepAliveMonitor.cancel();
             state = STOPPED;
+            client.sendTeardownRequest();
         }
 
         for (EventListener listener : listeners) {
@@ -367,15 +368,15 @@ public final class MediaSession implements VideoListener {
         MediaTrack track = sampleStreamWrapper.getMediaTrack();
         int localPort = sampleStreamWrapper.getLocalPort();
 
-        if (deliveryMode == INTERLEAVED || client.isInterleavedMode()) {
+//        if (deliveryMode == INTERLEAVED || client.isInterleavedMode()) {
             if (prepared.size() > 0) {
                 Transport transport = Transport.parse("RTP/AVP/TCP;interleaved=" + nextTcpChannel());
                 client.sendSetupRequest(track.url(), transport);
             }
 
-        } else {
-            client.sendSetupRequest(track, localPort);
-        }
+//        } else {
+//            client.sendSetupRequest(track, localPort);
+//        }
     }
 
     public synchronized void configureTransport(Transport transport) {
